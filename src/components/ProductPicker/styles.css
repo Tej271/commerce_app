@@ -1,0 +1,44 @@
+.picker-container{
+    margin: 0px auto;
+    display: table;
+    margin: 2.5% auto 0 auto;
+}
+
+.picker-sub-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.picker-sub-container .add-title{
+    color: #000000E5;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+table{
+    margin-top: 5%;
+    width: fit-content;
+    table-layout: auto;
+    border-spacing: 3px;
+}
+
+table th{
+    padding:16px;
+    font-weight: 500;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    text-align: left;
+    color: #000000E5;
+}
+
+td{
+    white-space: nowrap;
+}
+
+.btn{
+    margin-top: 20px;
+    align-self: flex-end;
+}

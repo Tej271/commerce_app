@@ -1,0 +1,15 @@
+.header{
+    border-bottom: 1px solid #D1D1D1;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.heading{
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: #7E8185;
+    margin-left: 20px;
+}

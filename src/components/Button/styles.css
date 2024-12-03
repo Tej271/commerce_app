@@ -1,0 +1,30 @@
+.btn-outline{
+    border: 2px solid rgba(0, 128, 96, 1);
+    border-radius: 4px;
+    color: rgba(0, 128, 96, 1);
+    font-size: 14px;
+    font-weight: 600;
+    align-self: flex-end;
+    line-height: 20px;
+}
+
+.btn-fill{
+    background-color: #008060;
+    border: 2px solid rgba(0, 128, 96, 1);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 1);
+    font-size: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    text-align: left;
+    padding: 6px 25px;
+}
+
+.large{
+    padding:14px 54px;
+}
+
+.normal{
+    padding:6px 28px;
+}
