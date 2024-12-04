@@ -111,7 +111,6 @@ const ProductListModal = ({ toggleModal, addProduct }) => {
       );
 
       const allChecked = updatedVariants.every((v) => v.checked);
-      const noneChecked = updatedVariants.every((v) => !v.checked);
 
       return {
         ...prevState,

@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import ProductPicker from "./components/ProductPicker";
 import ProductListModal from "./components/ProductListModal";
 import Header from "./components/Header";
-import Table from "./components/Table";
 
 function App() {
   const newProduct = {
