@@ -3,6 +3,7 @@ import axios from "axios";
 import Button from "../Button";
 import { btnClose, btnSearch } from "../../assets/images";
 import "./styles.css";
+const API_KEY = process.env.MONK_APP_API_KEY;
 
 const ProductListModal = ({ toggleModal, addProduct }) => {
   const productRefs = useRef({});
@@ -68,7 +69,7 @@ const ProductListModal = ({ toggleModal, addProduct }) => {
   useEffect(() => {
     const url = "https://stageapi.monkcommerce.app/task/products/search";
     const headers = {
-      "x-api-key": "72njgfa948d9aS7gs5",
+      "x-api-key": API_KEY,
     };
 
     const getProducts = async () => {
