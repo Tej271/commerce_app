@@ -1,76 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import Button from "../Button";
 import { btnClose, btnSearch } from "../../assets/images";
 import "./styles.css";
 
-const data = [
-  {
-    id: 77,
-    title: "Fog Linen Chambray Towel - Beige Stripe",
-    variants: [
-      {
-        id: 1,
-        product_id: 77,
-        title: "XS / Silver",
-        price: "49",
-      },
-      {
-        id: 2,
-        product_id: 77,
-        title: "S / Silver",
-        price: "49",
-      },
-      {
-        id: 3,
-        product_id: 77,
-        title: "M / Silver",
-        price: "49",
-      },
-    ],
-    image: {
-      id: 266,
-      product_id: 77,
-      src: "https://cdn11.bigcommerce.com/s-p1xcugzp89/products/77/images/266/foglinenbeigestripetowel1b.1647248662.386.513.jpg?c=1",
-    },
-  },
-  {
-    id: 80,
-    title: "Orbit Terrarium - Large",
-    variants: [
-      {
-        id: 64,
-        product_id: 80,
-        title: "Default Title",
-        price: "109",
-      },
-    ],
-    image: {
-      id: 272,
-      product_id: 80,
-      src: "https://cdn11.bigcommerce.com/s-p1xcugzp89/products/80/images/272/roundterrariumlarge.1647248662.386.513.jpg?c=1",
-    },
-  },
-];
-
 const ProductListModal = ({ toggleModal, addProduct }) => {
   const productRefs = useRef({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [checkedState, setCheckedState] = useState(() => {
-    let initialState = {};
-    initialState = data.reduce((acc, product) => {
-      acc[product.id] = {
-        ...product,
-        checked: false,
-        variants: product.variants.map((variant) => ({
-          ...variant,
-          checked: false,
-        })),
-      };
-      return acc;
-    }, {});
-    console.log(initialState);
-    return initialState;
-  });
+  const [checkedState, setCheckedState] = useState({});
+  const [products, setProducts] = useState([]);
 
   const handleModalClick = (e) => {
     if (e.target.className === "modal show") {
@@ -128,20 +66,46 @@ const ProductListModal = ({ toggleModal, addProduct }) => {
   ).length;
 
   useEffect(() => {
-    Object.keys(checkedState).forEach((productId) => {
-      const productState = checkedState[productId];
-      const ref = productRefs.current[productId];
+    const url = "https://stageapi.monkcommerce.app/task/products/search";
+    const headers = {
+      "x-api-key": "72njgfa948d9aS7gs5",
+    };
 
-      if (ref) {
-        const variantStates = productState.variants.map((v) => v.checked);
-        const allChecked = variantStates.every(Boolean);
-        const noneChecked = variantStates.every((v) => !v);
+    const getProducts = async () => {
+      try {
+        const response = await axios.get(url, {
+          headers,
+          params: {
+            search: searchTerm,
+            page: 2,
+          },
+        });
 
-        ref.indeterminate = !allChecked && !noneChecked && variantStates.length > 0;
+        const productsData = response.data;
+        setProducts(productsData);
+
+        console.log("Products", productsData);
+
+        // Initialize checkedState based on fetched products
+        const newCheckedState = productsData?.reduce((acc, product) => {
+          acc[product.id] = {
+            ...product,
+            checked: false,
+            variants: product.variants.map((variant) => ({
+              ...variant,
+              checked: false,
+            })),
+          };
+          return acc;
+        }, {});
+        setCheckedState(newCheckedState);
+      } catch (error) {
+        console.error("Error occurred:", error.response?.data || error.message);
       }
-    });
+    };
 
-  }, [checkedState]);
+    getProducts();
+  }, [searchTerm]);
 
   return (
     <div className={`modal`} onClick={handleModalClick}>
@@ -163,63 +127,62 @@ const ProductListModal = ({ toggleModal, addProduct }) => {
           </div>
         </div>
 
-        <div>
-          {Object.values(checkedState)
-            .filter((x) => x.title.toLowerCase().includes(searchTerm))
-            .map((product) => (
-              <div key={product.id}>
-                <div key={product.id} className="product-main">
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    ref={(el) => (productRefs.current[product.id] = el)}
-                    checked={product.checked}
-                    onChange={() => handleProductChange(product.id)}
-                  />
-                  <img
-                    alt="shirt"
-                    src={product.image.src}
-                    className="prod-img"
-                    width={"36"}
-                    height={"36"}
-                  />
-                  <span>{product.title}</span>
-                </div>
-
-                {product.variants.map((variant) => (
-                  <div key={variant.id} className="product-variant-main">
-                    <div className="variant-container">
-                      <input
-                        type="checkbox"
-                        className="checkbox"
-                        checked={variant.checked}
-                        onChange={() => handleVariantChange(product.id, variant.id)}
-                      />
-                      <label>{variant.title}</label>
-                    </div>
-                    <div className="price-container">
-                      <span>{variant.product_id} available</span>
-                      <span>${variant.price}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))}
-
-          <div className="footer">
-            <span>{selectedProductCount} product selected</span>
-            <div className="footer-buttons">
-              <Button title={"Cancel"} type={"outlined"} size={"normal"} />
-              <div className="add">
-                <Button
-                  title={"Add"}
-                  type={"filled"}
-                  onClick={() => {
-                    addProduct(checkedState);
-                    toggleModal();
-                  }}
+        <div className="product-list-container">
+          {Object.values(checkedState).map((product) => (
+            <div key={product.id}>
+              <div key={product.id} className="product-main">
+                <input
+                  type="checkbox"
+                  className="checkbox"
+                  ref={(el) => (productRefs.current[product.id] = el)}
+                  checked={product.checked}
+                  onChange={() => handleProductChange(product.id)}
                 />
+                <img
+                  alt="shirt"
+                  src={product.image.src}
+                  className="prod-img"
+                  width={"36"}
+                  height={"36"}
+                />
+                <span>{product.title}</span>
               </div>
+
+              {product.variants.map((variant) => (
+                <div key={variant.id} className="product-variant-main">
+                  <div className="variant-container">
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      checked={variant.checked}
+                      onChange={() => handleVariantChange(product.id, variant.id)}
+                    />
+                    <label>{variant.title}</label>
+                  </div>
+                  <div className="price-container">
+                    {variant.inventory_quantity > 0 ? (
+                      <span>{variant.inventory_quantity} available</span>
+                    ) : null}
+                    <span>${variant.price}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div className="footer">
+          <span>{selectedProductCount} product selected</span>
+          <div className="footer-buttons">
+            <Button title={"Cancel"} type={"outlined"} size={"normal"} />
+            <div className="add">
+              <Button
+                title={"Add"}
+                type={"filled"}
+                onClick={() => {
+                  addProduct(checkedState);
+                  toggleModal();
+                }}
+              />
             </div>
           </div>
         </div>
