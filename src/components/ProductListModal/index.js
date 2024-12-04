@@ -3,7 +3,7 @@ import axios from "axios";
 import Button from "../Button";
 import { btnClose, btnSearch } from "../../assets/images";
 import "./styles.css";
-const API_KEY = process.env.MONK_APP_API_KEY;
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 const ProductListModal = ({ toggleModal, addProduct }) => {
   const productRefs = useRef({});
