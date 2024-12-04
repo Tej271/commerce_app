@@ -9,7 +9,7 @@ const ProductListModal = ({ toggleModal, addProduct }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [checkedState, setCheckedState] = useState({});
   const [products, setProducts] = useState([]);
-
+  console.log(products)
   const handleModalClick = (e) => {
     if (e.target.className === "modal show") {
       toggleModal();
@@ -83,8 +83,6 @@ const ProductListModal = ({ toggleModal, addProduct }) => {
 
         const productsData = response.data;
         setProducts(productsData);
-
-        console.log("Products", productsData);
 
         // Initialize checkedState based on fetched products
         const newCheckedState = productsData?.reduce((acc, product) => {
